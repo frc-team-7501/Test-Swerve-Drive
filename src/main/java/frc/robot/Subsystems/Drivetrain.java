@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.SwerveModule;
+import frc.robot.Constants.CANMapping;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
@@ -24,10 +25,10 @@ public class Drivetrain {
   private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
   private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(54, 34, 0, 44);
-  private final SwerveModule m_frontRight = new SwerveModule(51, 31, 4, 41);
-  private final SwerveModule m_backLeft = new SwerveModule(52, 32, 8, 42);
-  private final SwerveModule m_backRight = new SwerveModule(53, 33, 12, 43);
+  private final SwerveModule m_frontLeft = new SwerveModule(CANMapping.SPARKMAX_DRIVE_FL, CANMapping.TALONSRX_TURN_FL, 44, CANMapping.TURN_CANCODER_FL);
+  private final SwerveModule m_frontRight = new SwerveModule(CANMapping.SPARKMAX_DRIVE_FR, CANMapping.TALONSRX_TURN_FR, 41, CANMapping.TURN_CANCODER_FR);
+  private final SwerveModule m_backLeft = new SwerveModule(CANMapping.SPARKMAX_DRIVE_BL, CANMapping.TALONSRX_TURN_BL, 42, CANMapping.TURN_CANCODER_BL);
+  private final SwerveModule m_backRight = new SwerveModule(CANMapping.SPARKMAX_DRIVE_BR, CANMapping.TALONSRX_TURN_BR, 43, CANMapping.TURN_CANCODER_BR);
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
