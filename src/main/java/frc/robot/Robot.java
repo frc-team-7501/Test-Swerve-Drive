@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.Drivetrain;
 
 public class Robot extends TimedRobot {
@@ -18,7 +19,7 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
-
+  
   @Override
   public void autonomousPeriodic() {
     driveWithJoystick(false);
@@ -53,5 +54,9 @@ public class Robot extends TimedRobot {
             * Drivetrain.kMaxAngularSpeed;
 
     m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
+
+    SmartDashboard.putNumber("xSpeed", xSpeed);
+    SmartDashboard.putNumber("ySpeed", ySpeed);
+    SmartDashboard.putNumber("rotation", rot);
   }
 }

@@ -19,17 +19,17 @@ import frc.robot.Constants.CANMapping;
 public class Drivetrain {
   public static final double kMaxSpeed = 1.0; // Power
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-//Put wheel positions here TODO:
+//TODO: Put wheel positions here 
   private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
   private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
   private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
   private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(CANMapping.SPARKMAX_DRIVE_FL, CANMapping.TALONSRX_TURN_FL, 44, CANMapping.TURN_CANCODER_FL);
-  private final SwerveModule m_frontRight = new SwerveModule(CANMapping.SPARKMAX_DRIVE_FR, CANMapping.TALONSRX_TURN_FR, 41, CANMapping.TURN_CANCODER_FR);
-  private final SwerveModule m_backLeft = new SwerveModule(CANMapping.SPARKMAX_DRIVE_BL, CANMapping.TALONSRX_TURN_BL, 42, CANMapping.TURN_CANCODER_BL);
-  private final SwerveModule m_backRight = new SwerveModule(CANMapping.SPARKMAX_DRIVE_BR, CANMapping.TALONSRX_TURN_BR, 43, CANMapping.TURN_CANCODER_BR);
-
+  private final SwerveModule m_frontLeft = new SwerveModule(CANMapping.SPARKMAX_DRIVE_FL, CANMapping.TALONSRX_TURN_FL, CANMapping.TURN_CANCODER_FL);
+  private final SwerveModule m_frontRight = new SwerveModule(CANMapping.SPARKMAX_DRIVE_FR, CANMapping.TALONSRX_TURN_FR, CANMapping.TURN_CANCODER_FR);
+  private final SwerveModule m_backLeft = new SwerveModule(CANMapping.SPARKMAX_DRIVE_BL, CANMapping.TALONSRX_TURN_BL, CANMapping.TURN_CANCODER_BL);
+  private final SwerveModule m_backRight = new SwerveModule(CANMapping.SPARKMAX_DRIVE_BR, CANMapping.TALONSRX_TURN_BR, CANMapping.TURN_CANCODER_BR);
+  //TODO: switch analog gyro to pigeon.
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
   private final SwerveDriveKinematics m_kinematics =

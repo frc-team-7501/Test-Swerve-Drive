@@ -7,13 +7,14 @@ package frc.robot.Commands;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix6.hardware.CANcoder;
+//import com.ctre.phoenix.sensors.CANCoderConfiguration;
+//import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -39,7 +40,7 @@ public class SwerveModule {
   private TalonSRX m_turningMotor;
 
   //private final CANSparkMax m_driveEncoder;
-  private CANCoder m_turningEncoder;
+  private CANcoder m_turningEncoder;
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
@@ -60,32 +61,33 @@ public class SwerveModule {
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
    * and turning encoder.
    *
-   * @param driveMotor     PWM output for the drive motor.
-   * @param turningMotor   PWM output for the turning motor.
-   * @param driveEncoder   CAN address for the drive encoder.
+   * @param driveMotor     CAN address for the drive motor.
+   * @param turningMotor   CAN address for the turning motor.
    * @param turningEncoder CAN address for the turning encoder.
    */
 
   public SwerveModule(
       int driveMotor,
       int turningMotor,
-      int driveEncoderChannel,
       int turningEncoderChannel) {
     m_driveMotor = new CANSparkMax(driveMotor, MotorType.kBrushless);
     m_turningMotor = new TalonSRX(turningMotor);
-    //m_turningMotor.changeControlMode(TalonControlMode.Speed);
 
-    // m_driveEncoder = new Encoder(driveEncoder);
-    // m_turningEncoder = new Encoder(turningEncoder);
+    // Factory reset, so we get the SPARK MAX to a known state before configuring them. This is useful in case a SPARK MAX is swapped out.
+    //m_driveMotor.restoreFactoryDefaults();
 
-    CANCoder turnEncoder = new CANCoder(turningEncoderChannel);
-    CANCoderConfiguration config = new CANCoderConfiguration();
-
-    // setting the CANCoder to read radians and output per second.
-    config.sensorCoefficient = 2 * Math.PI / 4096.0;
-    config.unitString = "rad";
-    config.sensorTimeBase = SensorTimeBase.PerSecond;
-    turnEncoder.configAllSettings(config);
+    m_driveEncoder = m_driveMotor.getEncoder();
+    
+    //m_driveEncoder = new RelativeEncoder(driveEncoder);
+    //m_turningEncoder = new CANcoder(turningEncoder);
+    
+    //setting the CANcoder to read radians and output per second.
+    m_turningEncoder = new CANcoder(turningEncoderChannel);
+    //CANcoderConfiguration config = new CANcoderConfiguration();
+    //config.sensorCoefficient = 2 * Math.PI / 4096.0;
+    //config.unitString = "rad";
+    //config.sensorTimeBase = SensorTimeBase.PerSecond;
+    //turnEncoder.configAllSettings(config);
 
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
@@ -118,7 +120,7 @@ public class SwerveModule {
   }
 
   public Rotation2d getRotation() {
-    return new Rotation2d(m_turningEncoder.getPosition());
+    return new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble());
   }
 
   /**
@@ -136,7 +138,7 @@ public class SwerveModule {
     //final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput = m_turningPIDController.calculate(m_turningEncoder.getPosition(),
+    final double turnOutput = m_turningPIDController.calculate(m_turningEncoder.getPosition().getValueAsDouble(),
         state.angle.getRadians());
 
     final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
