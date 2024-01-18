@@ -38,5 +38,6 @@ public final class Constants {
     public static final class MiscMapping {
         public static final boolean BRAKE_ON = true;
         public static final boolean BRAKE_OFF = false;
+        public static final boolean FIELD_RELATIVE = false;
     }
 }
