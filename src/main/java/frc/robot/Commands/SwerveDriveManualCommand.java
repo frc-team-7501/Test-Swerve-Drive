@@ -25,7 +25,7 @@ public class SwerveDriveManualCommand extends Command {
     DoubleSupplier rotateSupplier,
     BooleanSupplier fieldRelative) {
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(driveTrain);
+    addRequirements(driveTrain);
     this.driveTrain = driveTrain;
     this.forwardSupplier = forwardSupplier;
     this.strafeSupplier = strafeSupplier;

@@ -26,6 +26,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
   private static final double kWheelRadius = 0.0508;
@@ -34,23 +35,31 @@ public class SwerveModule {
   private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
   private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
 
+private double showTurnOutput;
+
   private CANSparkMax m_driveMotor;
   private RelativeEncoder m_driveEncoder;
   private TalonSRX m_turningMotor;
 
-  //private final CANSparkMax m_driveEncoder;
+  // private final CANSparkMax m_driveEncoder;
   private CANcoder m_turningEncoder;
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.1, 0, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-      1,
+  private final PIDController m_turningPIDController = new PIDController(
+      0.1,
       0,
-      0,
-      new TrapezoidProfile.Constraints(
-          kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+      0 );
+  
+  //private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
+  //    0.1,
+  //    0,
+  //    0,
+  //    new TrapezoidProfile.Constraints(
+  //        kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
@@ -72,26 +81,28 @@ public class SwerveModule {
     m_driveMotor = new CANSparkMax(driveMotor, MotorType.kBrushless);
     m_turningMotor = new TalonSRX(turningMotor);
 
-    // Factory reset, so we get the SPARK MAX to a known state before configuring them. This is useful in case a SPARK MAX is swapped out.
-    //m_driveMotor.restoreFactoryDefaults();
+    // Factory reset, so we get the SPARK MAX to a known state before configuring
+    // them. This is useful in case a SPARK MAX is swapped out.
+    // m_driveMotor.restoreFactoryDefaults();
 
     m_driveEncoder = m_driveMotor.getEncoder();
-    
-    //m_driveEncoder = new RelativeEncoder(driveEncoder);
-    //m_turningEncoder = new CANcoder(turningEncoder);
-    
-    //setting the CANcoder to read radians and output per second.
+
+    // m_driveEncoder = new RelativeEncoder(driveEncoder);
+    // m_turningEncoder = new CANcoder(turningEncoder);
+
+    // setting the CANcoder to read radians and output per second.
     m_turningEncoder = new CANcoder(turningEncoderChannel);
-    //CANcoderConfiguration config = new CANcoderConfiguration();
-    //config.sensorCoefficient = 2 * Math.PI / 4096.0;
-    //config.unitString = "rad";
-    //config.sensorTimeBase = SensorTimeBase.PerSecond;
-    //turnEncoder.configAllSettings(config);
+    // CANcoderConfiguration config = new CANcoderConfiguration();
+    // config.sensorCoefficient = 2 * Math.PI / 4096.0;
+    // config.unitString = "rad";
+    // config.sensorTimeBase = SensorTimeBase.PerSecond;
+    // turnEncoder.configAllSettings(config);
 
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
-    //m_driveEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
+    // m_driveEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius /
+    // kEncoderResolution);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -115,11 +126,19 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-       m_driveEncoder.getPosition(), getRotation());
+        m_driveEncoder.getPosition(), getRotation());
   }
 
   public Rotation2d getRotation() {
-    return new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble());
+    return new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble() * 2 * Math.PI);
+  }
+
+  public double showRotation() {
+    return m_turningEncoder.getPosition().getValueAsDouble() * 2 * Math.PI;
+  }
+
+  public double showTurnPower() {
+    return showTurnOutput;
   }
 
   /**
@@ -134,15 +153,21 @@ public class SwerveModule {
     // Calculate the drive output from the drive PID controller.
     final double driveOutput = state.speedMetersPerSecond;
 
-    //final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
+    // final double driveFeedforward =
+    // m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
+    // final double turnOutput =
+    // m_turningPIDController.calculate(m_turningEncoder.getPosition().getValueAsDouble(),
+    // state.angle.getRotations());
     final double turnOutput = m_turningPIDController.calculate(m_turningEncoder.getPosition().getValueAsDouble(),
         state.angle.getRadians());
+    showTurnOutput = turnOutput;
 
-    final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+    //final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
     m_driveMotor.set(driveOutput);
-    m_turningMotor.set(TalonSRXControlMode.PercentOutput, turnOutput + turnFeedforward);
+    m_turningMotor.set(TalonSRXControlMode.PercentOutput, turnOutput);
+    //m_turningMotor.set(TalonSRXControlMode.PercentOutput, turnOutput + turnFeedforward);
   }
 }

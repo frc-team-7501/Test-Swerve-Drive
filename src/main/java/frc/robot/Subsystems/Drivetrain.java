@@ -22,7 +22,7 @@ import frc.robot.Constants.CANMapping;
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
   public static final double kMaxSpeed = 1.0; // Power
-  public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
+  public static final double kMaxAngularSpeed = 0.5; // 1/2 rotation per second
   // TODO: Put wheel positions here
   private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
   private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
@@ -111,7 +111,11 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("xSpeed", xSpeed);
     SmartDashboard.putNumber("ySpeed", ySpeed);
     SmartDashboard.putNumber("rotation", rot);
-
+    SmartDashboard.putNumber("back left position", m_backLeft.showRotation() % (Math.PI * 2));
+    SmartDashboard.putNumber("back left turn output", m_backLeft.showTurnPower());
+    
+    
+    
     if (fieldRelative) {
       swerveModuleStates = m_kinematics.toSwerveModuleStates(
           ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d()));
@@ -121,7 +125,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-
+    
+    SmartDashboard.putString("desired state", swerveModuleStates[2].toString());
+    
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
