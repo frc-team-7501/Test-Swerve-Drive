@@ -5,9 +5,11 @@
 package frc.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -18,16 +20,18 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANMapping;
+import frc.robot.Constants.MiscMapping;
+import frc.robot.Constants;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
-  public static final double kMaxSpeed = 1.0; // Power
+  public static final double kMaxSpeed = MiscMapping.MAXSPEED; // Power
   public static final double kMaxAngularSpeed = 0.5; // 1/2 rotation per second
-  // TODO: Put wheel positions here
-  private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-  private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-  private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-  private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+  // Wheel position offsets.
+  private final Translation2d m_frontLeftLocation = new Translation2d(0.292, 0.292);
+  private final Translation2d m_frontRightLocation = new Translation2d(0.292, -0.292);
+  private final Translation2d m_backLeftLocation = new Translation2d(-0.292, 0.292);
+  private final Translation2d m_backRightLocation = new Translation2d(-0.292, -0.292);
 
   private final SwerveModule m_frontLeft = new SwerveModule(CANMapping.SPARKMAX_DRIVE_FL, CANMapping.TALONSRX_TURN_FL,
       CANMapping.TURN_CANCODER_FL);
@@ -44,7 +48,7 @@ public class Drivetrain extends SubsystemBase {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   // TODO: switch analog gyro to pigeon.
-  private final AnalogGyro m_gyro = new AnalogGyro(0);
+  private final PigeonIMU m_pigeonIMU = new PigeonIMU(CANMapping.PIGEON_IMU);
 
   private static Drivetrain instance;
 
@@ -59,16 +63,17 @@ public class Drivetrain extends SubsystemBase {
 
   private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       m_kinematics,
-      m_gyro.getRotation2d(),
+      getGyroYaw2d(),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
           m_backLeft.getPosition(),
           m_backRight.getPosition()
-      });
+      }
+  );
 
   public Drivetrain() {
-    m_gyro.reset();
+  resetYaw();
   }
  
   public void setBrakeMode(boolean enabled) {
@@ -78,6 +83,23 @@ public class Drivetrain extends SubsystemBase {
 //        motorFL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
 //        motorFR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
     }
+    
+    public void resetYaw() {
+      m_pigeonIMU.setYaw(0);
+    }
+
+    public double getGyroYaw () {
+      double [] ypr = new double [3];
+      m_pigeonIMU.getYawPitchRoll(ypr);
+      return ypr [0];
+    }
+
+    public Rotation2d getGyroYaw2d () {
+      double [] ypr = new double [3];
+      m_pigeonIMU.getYawPitchRoll(ypr);
+      return Rotation2d.fromDegrees(ypr [0]);
+    }
+
   /**
    * Method to drive the robot using joystick info.
    *
@@ -92,13 +114,13 @@ public class Drivetrain extends SubsystemBase {
 
     // Get the y speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(forward, 0.02))
+    final var xSpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(forward, 0.02))
         * Drivetrain.kMaxSpeed;
 
     // Get the x speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(strafe, 0.02))
+    final var ySpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(strafe, 0.02))
         * Drivetrain.kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
@@ -111,14 +133,14 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("xSpeed", xSpeed);
     SmartDashboard.putNumber("ySpeed", ySpeed);
     SmartDashboard.putNumber("rotation", rot);
-    SmartDashboard.putNumber("back left position", m_backLeft.showRotation() % (Math.PI * 2));
-    SmartDashboard.putNumber("back left turn output", m_backLeft.showTurnPower());
+    SmartDashboard.putNumber("back left position", m_backRight.showRotation() % (Math.PI * 2));
+    SmartDashboard.putNumber("back left turn output", m_backRight.showTurnPower());
     
     
     
     if (fieldRelative) {
       swerveModuleStates = m_kinematics.toSwerveModuleStates(
-          ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d()));
+          ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getGyroYaw2d()));
     } else {
       swerveModuleStates = m_kinematics.toSwerveModuleStates(
           new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -126,7 +148,7 @@ public class Drivetrain extends SubsystemBase {
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     
-    SmartDashboard.putString("desired state", swerveModuleStates[2].toString());
+    SmartDashboard.putString("desired state", swerveModuleStates[3].toString());
     
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
@@ -137,7 +159,7 @@ public class Drivetrain extends SubsystemBase {
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     m_odometry.update(
-        m_gyro.getRotation2d(),
+        getGyroYaw2d(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),

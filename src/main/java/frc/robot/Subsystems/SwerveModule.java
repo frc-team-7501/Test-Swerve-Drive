@@ -29,14 +29,13 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
-  private static final double kWheelRadius = 0.0508;
-  private static final int kEncoderResolution = 4096;
+  // Only for Trapezoidal PID commands.
+  //private static final double kWheelRadius = 0.0508;
+  //private static final int kEncoderResolution = 4096;
+  //private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
+  //private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
 
-  private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
-  private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
-
-private double showTurnOutput;
-
+  private double showTurnOutput;
   private CANSparkMax m_driveMotor;
   private RelativeEncoder m_driveEncoder;
   private TalonSRX m_turningMotor;
@@ -44,14 +43,11 @@ private double showTurnOutput;
   // private final CANSparkMax m_driveEncoder;
   private CANcoder m_turningEncoder;
 
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(0.1, 0, 0);
+  // Use if we use encoders for Drive Motors.
+  //private final PIDController m_drivePIDController = new PIDController(0.1, 0, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_turningPIDController = new PIDController(
-      0.1,
-      0,
-      0 );
+  private final PIDController m_turningPIDController = new PIDController(0.2, 0.02, 0);
   
   //private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
   //    0.1,
@@ -61,9 +57,9 @@ private double showTurnOutput;
   //        kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
 
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
+  // Potential use option.
+  //private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
+  //private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -86,23 +82,7 @@ private double showTurnOutput;
     // m_driveMotor.restoreFactoryDefaults();
 
     m_driveEncoder = m_driveMotor.getEncoder();
-
-    // m_driveEncoder = new RelativeEncoder(driveEncoder);
-    // m_turningEncoder = new CANcoder(turningEncoder);
-
-    // setting the CANcoder to read radians and output per second.
     m_turningEncoder = new CANcoder(turningEncoderChannel);
-    // CANcoderConfiguration config = new CANcoderConfiguration();
-    // config.sensorCoefficient = 2 * Math.PI / 4096.0;
-    // config.unitString = "rad";
-    // config.sensorTimeBase = SensorTimeBase.PerSecond;
-    // turnEncoder.configAllSettings(config);
-
-    // Set the distance per pulse for the drive encoder. We can simply use the
-    // distance traveled for one rotation of the wheel divided by the encoder
-    // resolution.
-    // m_driveEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius /
-    // kEncoderResolution);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -160,7 +140,7 @@ private double showTurnOutput;
     // final double turnOutput =
     // m_turningPIDController.calculate(m_turningEncoder.getPosition().getValueAsDouble(),
     // state.angle.getRotations());
-    final double turnOutput = m_turningPIDController.calculate(m_turningEncoder.getPosition().getValueAsDouble(),
+    final double turnOutput = m_turningPIDController.calculate(m_turningEncoder.getPosition().getValueAsDouble() * 2 * Math.PI,
         state.angle.getRadians());
     showTurnOutput = turnOutput;
 

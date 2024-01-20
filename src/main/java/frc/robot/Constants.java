@@ -38,6 +38,8 @@ public final class Constants {
     public static final class MiscMapping {
         public static final boolean BRAKE_ON = true;
         public static final boolean BRAKE_OFF = false;
-        public static final boolean FIELD_RELATIVE = false;
+        public static final boolean FIELD_RELATIVE = true;
+        public static final double MAXSPEED = 0.7;
+        public static final double MAXANGULARSPEED = 0.8;
     }
 }
