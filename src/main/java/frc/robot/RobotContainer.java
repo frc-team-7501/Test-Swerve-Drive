@@ -4,8 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.proto.Controller;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -13,57 +13,58 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems.*;
+import frc.robot.utils.ExtendedXboxController;
 import frc.robot.Commands.*;
 import frc.robot.Constants.*;
 
 public class RobotContainer {
-  private final XboxController m_Xbox = new XboxController(0);
-  private final Joystick m_Joystick= new Joystick (1);
+  private final ExtendedXboxController m_Xbox = new ExtendedXboxController(ControllerMapping.XBOX);
+  private final Joystick m_Joystick = new Joystick(ControllerMapping.JOYSTICK);
 
-  //create subsystems
+  // create subsystems
   private final Drivetrain driveTrain = Drivetrain.getInstance();
 
   ////////////////////////////////
-    // #region [ AUTON COMMANDS ]
-    // #region Placeholder
-    // Auton placeholder
-    private final Command DefaultAuton = new SequentialCommandGroup(
+  // #region [ AUTON COMMANDS ]
+  // #region Placeholder
+  // Auton placeholder
+  private final Command DefaultAuton = new SequentialCommandGroup(
       new WaitCommand(7.501));
-    // #endregion
-    // #endregion
+  // #endregion
+  // #endregion
 
-    // Create commands
-    private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
+  // Create commands
+  private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
       driveTrain,
       () -> m_Xbox.getLeftY(),
       () -> m_Xbox.getLeftX(),
       () -> m_Xbox.getRightX(),
-      () -> MiscMapping.FIELD_RELATIVE
-      );
+      () -> MiscMapping.FIELD_RELATIVE);
 
-    private final InstantCommand ResetGyroYawInstantCommand = new ResetGyroYawInstantCommand(
-      driveTrain
-      );
-  
-      public RobotContainer() {
-        driveTrain.setDefaultCommand(swerveDriveManualCommand);
-        configureButtonBindings();
-      }
-      // TODO: Set to a button.
-      private void configureButtonBindings() {
-       // m_Xbox.(ResetGyroYawInstantCommand(driveTrain));
-      }
+  private final InstantCommand ResetGyroYawInstantCommand = new ResetGyroYawInstantCommand(
+      driveTrain);
 
-      public void teleopInit() {
-        driveTrain.setBrakeMode(MiscMapping.BRAKE_OFF);
-      }
+  public RobotContainer() {
+    driveTrain.setDefaultCommand(swerveDriveManualCommand);
+    configureButtonBindings();
+  }
 
-      public void autonomousInit() {
-        driveTrain.setBrakeMode(MiscMapping.BRAKE_ON);
-      }
+  // TODO: Set to a button.
+  private void configureButtonBindings() {
+    // Back button on the drive controller resets gyroscope.
+    m_Xbox.b_Back().onTrue(new ResetGyroYawInstantCommand(driveTrain));
+  }
 
-      public Command getAutonomousCommand() {
-        // [MAIN AUTONS]
-         return DefaultAuton; // Literally just a wait command to satisfy WPILIB.
-    }
+  public void teleopInit() {
+    driveTrain.setBrakeMode(MiscMapping.BRAKE_OFF);
+  }
+
+  public void autonomousInit() {
+    driveTrain.setBrakeMode(MiscMapping.BRAKE_ON);
+  }
+
+  public Command getAutonomousCommand() {
+    // [MAIN AUTONS]
+    return DefaultAuton; // Literally just a wait command to satisfy WPILIB.
+  }
 }

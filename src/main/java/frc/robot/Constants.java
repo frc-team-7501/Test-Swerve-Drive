@@ -25,8 +25,8 @@ public final class Constants {
     }
 
     public static final class ControllerMapping {
-        public static final int JOYSTICK = 0;
-        public static final int XBOX = 1;
+        public static final int JOYSTICK = 1;
+        public static final int XBOX = 0;
     }
 
     public static final class PneumaticsMapping {
