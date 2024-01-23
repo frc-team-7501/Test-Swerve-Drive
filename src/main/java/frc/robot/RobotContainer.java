@@ -23,6 +23,7 @@ public class RobotContainer {
 
   // create subsystems
   private final Drivetrain driveTrain = Drivetrain.getInstance();
+  private final Launcher launcher = Launcher.getInstance();
 
   ////////////////////////////////
   // #region [ AUTON COMMANDS ]
@@ -43,13 +44,18 @@ public class RobotContainer {
 
   private final InstantCommand ResetGyroYawInstantCommand = new ResetGyroYawInstantCommand(
       driveTrain);
+  
+  private final Command launchControlCommand = new LaunchControlCommand(launcher, () -> m_Xbox.getRightTriggerAxis());
 
   public RobotContainer() {
-    driveTrain.setDefaultCommand(swerveDriveManualCommand);
+    
     configureButtonBindings();
+
+    driveTrain.setDefaultCommand(swerveDriveManualCommand);
+    launcher.setDefaultCommand(launchControlCommand);
+    
   }
 
-  // TODO: Set to a button.
   private void configureButtonBindings() {
     // Back button on the drive controller resets gyroscope.
     m_Xbox.b_Back().onTrue(new ResetGyroYawInstantCommand(driveTrain));
@@ -64,7 +70,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // [MAIN AUTONS]
+    // [ MAIN AUTONS ]
     return DefaultAuton; // Literally just a wait command to satisfy WPILIB.
   }
 }
