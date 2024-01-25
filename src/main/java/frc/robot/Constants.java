@@ -22,10 +22,10 @@ public final class Constants {
         // Other Motors
         public static final int LAUNCH_TALON = 11;
         public static final int INTAKE_TALON = 12;
-        
+
         // MISC CAN Bus
         public static final int PIGEON_IMU = 20;
-        //public static final int PNEUMATIC_HUB = 5;
+        // public static final int PNEUMATIC_HUB = 5;
     }
 
     public static final class ControllerMapping {
@@ -45,5 +45,7 @@ public final class Constants {
         public static final boolean FIELD_RELATIVE = true;
         public static final double MAXSPEED = 0.7;
         public static final double MAXANGULARSPEED = 0.8;
+        public static final double LAUNCH_VELOCITY = -500;
     }
+    //TODO: Swap intake to launch code.
 }

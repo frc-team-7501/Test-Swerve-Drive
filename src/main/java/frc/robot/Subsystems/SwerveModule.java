@@ -45,7 +45,8 @@ public class SwerveModule {
 
   // Use if we use encoders for Drive Motors.
   //private final PIDController m_drivePIDController = new PIDController(0.1, 0, 0);
-
+  
+  //TODO: refine PID controller for turning PID
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_turningPIDController = new PIDController(0.2, 0.02, 0);
   

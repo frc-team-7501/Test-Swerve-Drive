@@ -7,17 +7,18 @@ package frc.robot.Commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.MiscMapping;
 import frc.robot.Subsystems.Launcher;
 
 public class LaunchControlCommand extends Command {
   /** Creates a new LaunchCommand. */
   private final Launcher Launcher;
-  private final DoubleSupplier launchSpeed;
+  private double launchSpeedDouble = 0;
+  private boolean isLauncherRunning = false;
 
-  public LaunchControlCommand(Launcher Launcher, DoubleSupplier launchSpeed) {
+  public LaunchControlCommand(Launcher Launcher) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.Launcher = Launcher;
-    this.launchSpeed = launchSpeed;
     addRequirements(Launcher);
   }
 
@@ -27,7 +28,19 @@ public class LaunchControlCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    // If running, stop. 
+    if (isLauncherRunning) {
+      isLauncherRunning = false;
+      launchSpeedDouble= MiscMapping.LAUNCH_VELOCITY;
+    } else {
+      isLauncherRunning = true;
+      launchSpeedDouble = MiscMapping.LAUNCH_VELOCITY;
+    }
+    
+    Launcher.fireLauncher(launchSpeedDouble);
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override

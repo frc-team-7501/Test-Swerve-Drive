@@ -45,20 +45,21 @@ public class RobotContainer {
   private final InstantCommand ResetGyroYawInstantCommand = new ResetGyroYawInstantCommand(
       driveTrain);
   
-  private final Command launchControlCommand = new LaunchControlCommand(launcher, () -> m_Xbox.getRightTriggerAxis());
+  //private final Command launchControlCommand = new LaunchControlCommand(launcher, 500.0);
 
   public RobotContainer() {
     
     configureButtonBindings();
 
     driveTrain.setDefaultCommand(swerveDriveManualCommand);
-    launcher.setDefaultCommand(launchControlCommand);
+    //launcher.setDefaultCommand(LaunchControlCommand);
     
   }
 
   private void configureButtonBindings() {
     // Back button on the drive controller resets gyroscope.
     m_Xbox.b_Back().onTrue(new ResetGyroYawInstantCommand(driveTrain));
+    m_Xbox.b_A().onTrue(new LaunchControlCommand(launcher));
   }
 
   public void teleopInit() {
@@ -71,6 +72,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // [ MAIN AUTONS ]
-    return DefaultAuton; // Literally just a wait command to satisfy WPILIB.
+    return DefaultAuton; // Just a wait command to satisfy WPILIB.
   }
 }
