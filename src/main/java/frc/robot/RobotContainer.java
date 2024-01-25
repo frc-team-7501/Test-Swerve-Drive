@@ -59,7 +59,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Back button on the drive controller resets gyroscope.
     m_Xbox.b_Back().onTrue(new ResetGyroYawInstantCommand(driveTrain));
-    m_Xbox.b_A().onTrue(new LaunchControlCommand(launcher));
+    m_Xbox.b_A().onTrue(new LaunchControlCommand(launcher, MiscMapping.LAUNCH_VELOCITY));
+    m_Xbox.b_A().onFalse(new LaunchControlCommand(launcher, 0.0));
   }
 
   public void teleopInit() {
