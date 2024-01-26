@@ -45,9 +45,8 @@ public final class Constants {
         public static final boolean FIELD_RELATIVE = true;
         public static final double MAXSPEED = 0.7;
         public static final double MAXANGULARSPEED = 0.8;
-        public static final double LAUNCH_VELOCITY = -10;
+        public static final double LAUNCH_VELOCITY = 40;
         public static final double INTAKE_VELOCITY = -50;
-        
+
     }
-    //TODO: Swap intake to launch code.
 }
