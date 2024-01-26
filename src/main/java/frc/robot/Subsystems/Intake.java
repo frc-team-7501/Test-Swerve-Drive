@@ -13,21 +13,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANMapping;
 
-public class Launcher extends SubsystemBase {
-  private final TalonFX m_LaunchMotor = new TalonFX(CANMapping.LAUNCH_TALON);
-  private static Launcher instance;
+public class Intake extends SubsystemBase {
+  private final TalonFX m_IntakeMotor = new TalonFX(CANMapping.INTAKE_TALON);
+  private static Intake instance;
 
   private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0);
 
-  /** Creates a new Launcher. */
-  public Launcher() {
+  /** Creates a new Intake. */
+  public Intake() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
     /*
      * Voltage-based velocity requires a feed forward to account for the back-emf of
      * the motor
-     */
-    //TODO: Make these values into constants.
+     */ 
+    //TODO: Change these values to constants.
     configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
     configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
     configs.Slot0.kD = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
@@ -42,7 +42,7 @@ public class Launcher extends SubsystemBase {
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
-      status = m_LaunchMotor.getConfigurator().apply(configs);
+      status = m_IntakeMotor.getConfigurator().apply(configs);
       if (status.isOK()) break;
     }
     if(!status.isOK()) {
@@ -51,14 +51,14 @@ public class Launcher extends SubsystemBase {
 
   }
 
-  public static Launcher getInstance() {
+  public static Intake getInstance() {
     if (instance == null)
-      instance = new Launcher();
+      instance = new Intake();
     return instance;
   }
 
-  public void fireLauncher(double velocity) {
-    m_LaunchMotor.setControl(m_voltageVelocity.withVelocity(velocity));
+  public void runIntake(double velocity) {
+    m_IntakeMotor.setControl(m_voltageVelocity.withVelocity(velocity));
     SmartDashboard.putNumber("velocity", velocity);
   }
 
@@ -68,6 +68,6 @@ public class Launcher extends SubsystemBase {
   }
 
   public void stop() {
-    m_LaunchMotor.stopMotor();
+    m_IntakeMotor.stopMotor();
   }
 }

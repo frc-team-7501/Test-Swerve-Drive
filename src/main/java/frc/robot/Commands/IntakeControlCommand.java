@@ -5,18 +5,18 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.Launcher;
+import frc.robot.Subsystems.Intake;
 
-public class LaunchControlCommand extends Command {
-  /** Creates a new LaunchCommand. */
-  private final Launcher Launcher;
-  private double launchSpeedDouble;
+public class IntakeControlCommand extends Command {
+  /** Creates a new IntakeCommand. */
+  private final Intake Intake;
+  private double intakeSpeedDouble;
 
-  public LaunchControlCommand(Launcher Launcher, Double launchSpeedDouble) {
+  public IntakeControlCommand(Intake Intake, Double intakeSpeedDouble) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.Launcher = Launcher;
-    this.launchSpeedDouble = launchSpeedDouble;
-    addRequirements(Launcher);
+    this.Intake = Intake;
+    this.intakeSpeedDouble = intakeSpeedDouble;
+    addRequirements(Intake);
   }
 
   // Called when the command is initially scheduled.
@@ -27,13 +27,13 @@ public class LaunchControlCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Launcher.fireLauncher(launchSpeedDouble);
+    Intake.runIntake(intakeSpeedDouble);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Launcher.stop();
+    Intake.stop();
   }
 
   // Returns true when the command should end.

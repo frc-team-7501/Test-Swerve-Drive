@@ -20,8 +20,8 @@ public final class Constants {
         public static final int TURN_CANCODER_FR = 41;
 
         // Other Motors
-        public static final int LAUNCH_TALON = 11;
-        public static final int INTAKE_TALON = 12;
+        public static final int LAUNCH_TALON = 12;
+        public static final int INTAKE_TALON = 11;
 
         // MISC CAN Bus
         public static final int PIGEON_IMU = 20;
@@ -46,6 +46,8 @@ public final class Constants {
         public static final double MAXSPEED = 0.7;
         public static final double MAXANGULARSPEED = 0.8;
         public static final double LAUNCH_VELOCITY = -10;
+        public static final double INTAKE_VELOCITY = -50;
+        
     }
     //TODO: Swap intake to launch code.
 }

@@ -4,26 +4,27 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.proto.Controller;
-import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+//import edu.wpi.first.wpilibj2.command.InstantCommand;
 //import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems.*;
+import frc.robot.utils.ExtendedJoystick;
 import frc.robot.utils.ExtendedXboxController;
 import frc.robot.Commands.*;
 import frc.robot.Constants.*;
 
 public class RobotContainer {
   private final ExtendedXboxController m_Xbox = new ExtendedXboxController(ControllerMapping.XBOX);
-  private final Joystick m_Joystick = new Joystick(ControllerMapping.JOYSTICK);
+  private final ExtendedJoystick m_Joystick = new ExtendedJoystick(ControllerMapping.JOYSTICK);
 
   // create subsystems
   private final Drivetrain driveTrain = Drivetrain.getInstance();
   private final Launcher launcher = Launcher.getInstance();
+    private final Intake intake = Intake.getInstance();
+
 
   ////////////////////////////////
   // #region [ AUTON COMMANDS ]
@@ -42,25 +43,21 @@ public class RobotContainer {
       () -> m_Xbox.getRightX(),
       () -> MiscMapping.FIELD_RELATIVE);
 
-  private final InstantCommand ResetGyroYawInstantCommand = new ResetGyroYawInstantCommand(
-      driveTrain);
-  
-  //private final Command launchControlCommand = new LaunchControlCommand(launcher, 500.0);
+  //private final InstantCommand ResetGyroYawInstantCommand = new ResetGyroYawInstantCommand(
+  //    driveTrain);
 
   public RobotContainer() {
-    
     configureButtonBindings();
-
     driveTrain.setDefaultCommand(swerveDriveManualCommand);
-    //launcher.setDefaultCommand(LaunchControlCommand);
-    
   }
 
   private void configureButtonBindings() {
     // Back button on the drive controller resets gyroscope.
     m_Xbox.b_Back().onTrue(new ResetGyroYawInstantCommand(driveTrain));
-    m_Xbox.b_A().onTrue(new LaunchControlCommand(launcher, MiscMapping.LAUNCH_VELOCITY));
-    m_Xbox.b_A().onFalse(new LaunchControlCommand(launcher, 0.0));
+    m_Xbox.b_B().onTrue(new LaunchControlCommand(launcher, MiscMapping.LAUNCH_VELOCITY));
+    m_Xbox.b_B().onFalse(new LaunchControlCommand(launcher, 0.0));
+    m_Xbox.b_A().onTrue(new IntakeControlCommand(intake, MiscMapping.INTAKE_VELOCITY));
+    m_Xbox.b_A().onFalse(new IntakeControlCommand(intake, 0.0));  
   }
 
   public void teleopInit() {

@@ -4,7 +4,7 @@
 
 package frc.robot.Subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+//import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.MathUtil;
@@ -16,12 +16,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CANMapping;
-import frc.robot.Constants.MiscMapping;
-import frc.robot.Constants;
+import frc.robot.Constants.*;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
@@ -47,7 +44,6 @@ public class Drivetrain extends SubsystemBase {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-  // TODO: switch analog gyro to pigeon.
   private final PigeonIMU m_pigeonIMU = new PigeonIMU(CANMapping.PIGEON_IMU);
 
   private static Drivetrain instance;
@@ -69,36 +65,35 @@ public class Drivetrain extends SubsystemBase {
           m_frontRight.getPosition(),
           m_backLeft.getPosition(),
           m_backRight.getPosition()
-      }
-  );
+      });
 
   public Drivetrain() {
-  resetYaw();
+    resetYaw();
   }
- 
+
   public void setBrakeMode(boolean enabled) {
-    //TODO: Set brake mode to off
-//        motorBL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-//        motorBR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-//        motorFL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-//        motorFR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-    }
-    
-    public void resetYaw() {
-      m_pigeonIMU.setYaw(0);
-    }
+    // TODO: Set brake mode to off
+    // motorBL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+    // motorBR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+    // motorFL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+    // motorFR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+  }
 
-    public double getGyroYaw () {
-      double [] ypr = new double [3];
-      m_pigeonIMU.getYawPitchRoll(ypr);
-      return ypr [0];
-    }
+  public void resetYaw() {
+    m_pigeonIMU.setYaw(0);
+  }
 
-    public Rotation2d getGyroYaw2d () {
-      double [] ypr = new double [3];
-      m_pigeonIMU.getYawPitchRoll(ypr);
-      return Rotation2d.fromDegrees(ypr [0]);
-    }
+  public double getGyroYaw() {
+    double[] ypr = new double[3];
+    m_pigeonIMU.getYawPitchRoll(ypr);
+    return ypr[0];
+  }
+
+  public Rotation2d getGyroYaw2d() {
+    double[] ypr = new double[3];
+    m_pigeonIMU.getYawPitchRoll(ypr);
+    return Rotation2d.fromDegrees(ypr[0]);
+  }
 
   /**
    * Method to drive the robot using joystick info.
@@ -135,9 +130,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("rotation", rot);
     SmartDashboard.putNumber("back left position", m_backRight.showRotation() % (Math.PI * 2));
     SmartDashboard.putNumber("back left turn output", m_backRight.showTurnPower());
-    
-    
-    
+
     if (fieldRelative) {
       swerveModuleStates = m_kinematics.toSwerveModuleStates(
           ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getGyroYaw2d()));
@@ -147,9 +140,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-    
+
     SmartDashboard.putString("desired state", swerveModuleStates[3].toString());
-    
+
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
