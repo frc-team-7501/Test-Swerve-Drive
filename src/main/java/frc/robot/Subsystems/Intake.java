@@ -33,10 +33,10 @@ public class Intake extends SubsystemBase {
     configs.Slot0.kD = TalonMapping.PID_D; // A change of 1 rotation per second squared results in 0.01 volts output
     configs.Slot0.kV = TalonMapping.PID_V; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
                              // volts / Rotation per second
-    // Peak output of 8 volts
+    // Peak output of 11 volts
     configs.Voltage.PeakForwardVoltage = TalonMapping.PEAK_VOLTAGE;
     configs.Voltage.PeakReverseVoltage = -TalonMapping.PEAK_VOLTAGE;
-    // Peak output of 40 amps
+    // Peak output of 80 amps
     configs.TorqueCurrent.PeakForwardTorqueCurrent = TalonMapping.PEAK_AMPERAGE;
     configs.TorqueCurrent.PeakReverseTorqueCurrent = -TalonMapping.PEAK_AMPERAGE;
     /* Retry config apply up to 5 times, report if failure */

@@ -22,8 +22,8 @@ import frc.robot.Constants.*;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
-  public static final double kMaxSpeed = MiscMapping.MAXSPEED; // Power
-  public static final double kMaxAngularSpeed = 0.5; // 1/2 rotation per second
+  public static final double kMaxSpeed = MiscMapping.MAXSPEED;
+  public static final double kMaxAngularSpeed = MiscMapping.MAXANGULARSPEED;
   // Wheel position offsets.
   private final Translation2d m_frontLeftLocation = new Translation2d(0.292, 0.292);
   private final Translation2d m_frontRightLocation = new Translation2d(0.292, -0.292);

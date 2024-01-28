@@ -54,7 +54,7 @@ public final class Constants {
         public static final double PID_I = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
         public static final double PID_D = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
         public static final double PID_V = 0.12; //Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
-        public static final double PEAK_VOLTAGE = 11; // Peak output of 8 volts
-        public static final double PEAK_AMPERAGE = 80; // Peak output of 40 amps
+        public static final double PEAK_VOLTAGE = 11; // Peak output of X volts on a Falcon.
+        public static final double PEAK_AMPERAGE = 80; // Peak output of X amps on a Falcon.
     }
 }
