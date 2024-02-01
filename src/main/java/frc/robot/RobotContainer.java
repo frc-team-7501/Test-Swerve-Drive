@@ -23,8 +23,8 @@ public class RobotContainer {
   // create subsystems
   private final Drivetrain driveTrain = Drivetrain.getInstance();
   private final Launcher launcher = Launcher.getInstance();
-    private final Intake intake = Intake.getInstance();
-
+  private final Intake intake = Intake.getInstance();
+  private final Handoff handoff = Handoff.getInstance();
 
   ////////////////////////////////
   // #region [ AUTON COMMANDS ]
@@ -43,8 +43,9 @@ public class RobotContainer {
       () -> m_Xbox.getRightX(),
       () -> MiscMapping.FIELD_RELATIVE);
 
-  //private final InstantCommand ResetGyroYawInstantCommand = new ResetGyroYawInstantCommand(
-  //    driveTrain);
+  // private final InstantCommand ResetGyroYawInstantCommand = new
+  // ResetGyroYawInstantCommand(
+  // driveTrain);
 
   public RobotContainer() {
     configureButtonBindings();
@@ -57,7 +58,9 @@ public class RobotContainer {
     m_Xbox.b_B().onTrue(new LaunchControlCommand(launcher, MiscMapping.LAUNCH_VELOCITY));
     m_Xbox.b_B().onFalse(new LaunchControlCommand(launcher, 0.0));
     m_Xbox.b_A().onTrue(new IntakeControlCommand(intake, MiscMapping.INTAKE_VELOCITY));
-    m_Xbox.b_A().onFalse(new IntakeControlCommand(intake, 0.0));  
+    m_Xbox.b_A().onFalse(new IntakeControlCommand(intake, 0.0));
+    m_Xbox.b_X().onTrue(new HandoffControlCommand(handoff, -.3));
+    m_Xbox.b_X().onFalse(new HandoffControlCommand(handoff, 0.0));
   }
 
   public void teleopInit() {
