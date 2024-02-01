@@ -43,9 +43,11 @@ public class Launcher extends SubsystemBase {
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
       status = m_LaunchMotor.getConfigurator().apply(configs);
+      SmartDashboard.putNumber("i", i);
       if (status.isOK()) break;
     }
     if(!status.isOK()) {
+      
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
 
