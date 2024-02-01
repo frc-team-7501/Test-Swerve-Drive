@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
     configs.TorqueCurrent.PeakForwardTorqueCurrent = TalonMapping.PEAK_AMPERAGE;
     configs.TorqueCurrent.PeakReverseTorqueCurrent = -TalonMapping.PEAK_AMPERAGE;
     /* Retry config apply up to 5 times, report if failure */
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
+    StatusCode status = StatusCode.StatusCodeNotInitialized; // TODO: fix configuration application
     for (int i = 0; i < 5; ++i) {
       status = m_IntakeMotor.getConfigurator().apply(configs);
       if (status.isOK()) break;
