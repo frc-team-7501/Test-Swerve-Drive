@@ -17,7 +17,6 @@ import frc.robot.Commands.*;
 import frc.robot.Constants.ControllerMapping;
 import frc.robot.Constants.MiscMapping;
 
-
 public class RobotContainer {
   private final ExtendedXboxController m_Xbox = new ExtendedXboxController(ControllerMapping.XBOX);
   private final ExtendedJoystick m_Joystick = new ExtendedJoystick(ControllerMapping.JOYSTICK);
@@ -27,6 +26,10 @@ public class RobotContainer {
   private final Launcher launcher = Launcher.getInstance();
   private final Intake intake = Intake.getInstance();
   private final Handoff handoff = Handoff.getInstance();
+  
+  public double XPosition;
+  public double YPosition;
+  public double ZPosition;
 
   ////////////////////////////////
   // #region [ AUTON COMMANDS ]
@@ -40,15 +43,24 @@ public class RobotContainer {
   // Create commands
   private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
       driveTrain,
-      () -> m_Xbox.getLeftY(),
-      () -> m_Xbox.getLeftX(),
-      () -> m_Xbox.getRightX(),
+      () -> XPosition,
+      () -> YPosition,
+      () -> ZPosition,
       () -> MiscMapping.FIELD_RELATIVE);
+  
+  //private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
+  //    driveTrain,
+  //    () -> m_Xbox.getLeftY(),
+  //    () -> m_Xbox.getLeftX(),
+  //    () -> m_Xbox.getRightX(),
+  //    () -> MiscMapping.FIELD_RELATIVE);
+
+  if 
 
   // private final InstantCommand ResetGyroYawInstantCommand = new
   // ResetGyroYawInstantCommand(
   // driveTrain);
-
+  
   public RobotContainer() {
     configureButtonBindings();
     driveTrain.setDefaultCommand(swerveDriveManualCommand);

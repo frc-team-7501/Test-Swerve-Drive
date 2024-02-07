@@ -11,10 +11,10 @@ import frc.robot.Subsystems.Drivetrain;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutonMoveXPIDCommand extends PIDCommand {
+public class AutonMovePIDCommand extends PIDCommand {
   private final Drivetrain drivetrain;
   /** Creates a new AutonMovePIDCommand. */
-  public AutonMoveXPIDCommand(final Drivetrain drivetrain,) {
+  public AutonMovePIDCommand(final Drivetrain drivetrain,) {
     super(
         // The controller that the command will use
         new PIDController(0, 0, 0),
