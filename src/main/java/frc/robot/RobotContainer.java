@@ -14,7 +14,9 @@ import frc.robot.Subsystems.*;
 import frc.robot.utils.ExtendedJoystick;
 import frc.robot.utils.ExtendedXboxController;
 import frc.robot.Commands.*;
-import frc.robot.Constants.*;
+import frc.robot.Constants.ControllerMapping;
+import frc.robot.Constants.MiscMapping;
+
 
 public class RobotContainer {
   private final ExtendedXboxController m_Xbox = new ExtendedXboxController(ControllerMapping.XBOX);
@@ -55,11 +57,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Back button on the drive controller resets gyroscope.
     m_Xbox.b_Back().onTrue(new ResetGyroYawInstantCommand(driveTrain));
+
     m_Xbox.b_B().onTrue(new LaunchControlCommand(launcher, MiscMapping.LAUNCH_VELOCITY));
     m_Xbox.b_B().onFalse(new LaunchControlCommand(launcher, 0.0));
+
     m_Xbox.b_A().onTrue(new IntakeControlCommand(intake, MiscMapping.INTAKE_VELOCITY));
     m_Xbox.b_A().onFalse(new IntakeControlCommand(intake, 0.0));
-    m_Xbox.b_X().onTrue(new HandoffControlCommand(handoff, -.3));
+
+    m_Xbox.b_X().onTrue(new HandoffControlCommand(handoff, MiscMapping.HANDOFF_SPEED));
     m_Xbox.b_X().onFalse(new HandoffControlCommand(handoff, 0.0));
   }
 

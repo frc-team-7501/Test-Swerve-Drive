@@ -12,13 +12,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANMapping;
 
 public class Handoff extends SubsystemBase {
-  private final CANSparkMax m_HanooffMotor = new CANSparkMax(CANMapping.HANDOFF_SPARKMAX, MotorType.kBrushless);
+  private final CANSparkMax m_HandoffMotor = new CANSparkMax(CANMapping.HANDOFF_SPARKMAX, MotorType.kBrushless);
   private static Handoff instance;
 
   /** Creates a new Handoff. */
-  public Handoff() {
-
-  }
+  public Handoff() {}
 
   public static Handoff getInstance() {
     if (instance == null)
@@ -27,7 +25,7 @@ public class Handoff extends SubsystemBase {
   }
 
   public void fireHandoff(double HandoffPower) {
-    m_HanooffMotor.set(HandoffPower);
+    m_HandoffMotor.set(HandoffPower);
   }
 
   @Override
@@ -36,6 +34,6 @@ public class Handoff extends SubsystemBase {
   }
 
   public void stop() {
-    m_HanooffMotor.stopMotor();
+    m_HandoffMotor.stopMotor();
   }
 }
