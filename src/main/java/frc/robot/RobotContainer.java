@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 //import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -14,6 +15,7 @@ import frc.robot.Subsystems.*;
 import frc.robot.utils.ExtendedJoystick;
 import frc.robot.utils.ExtendedXboxController;
 import frc.robot.Commands.*;
+import frc.robot.Commands.Autonomous.AutonLauncherCommand;
 import frc.robot.Constants.ControllerMapping;
 import frc.robot.Constants.MiscMapping;
 
@@ -26,7 +28,7 @@ public class RobotContainer {
   private final Launcher launcher = Launcher.getInstance();
   private final Intake intake = Intake.getInstance();
   private final Handoff handoff = Handoff.getInstance();
-  
+
   public double XPosition;
   public double YPosition;
   public double ZPosition;
@@ -35,30 +37,36 @@ public class RobotContainer {
   // #region [ AUTON COMMANDS ]
   // #region Placeholder
   // Auton placeholder
-  private final Command DefaultAuton = new SequentialCommandGroup(
-      new WaitCommand(7.501));
+  private final Command DefaultAuton = new SequentialCommandGroup(  
+      new AutonLauncherCommand(launcher, 0),
+      new WaitCommand(0.1),
+      new AutonLauncherCommand(launcher, MiscMapping.LAUNCH_VELOCITY),
+      new WaitCommand(5.0));
+      //new AutonLauncherCommand(launcher,0));
+
   // #endregion
   // #endregion
 
   // Create commands
-  //private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
-  //    driveTrain,
-  //    () -> XPosition,
-  //    () -> YPosition,
-  //    () -> ZPosition,
-  //    () -> MiscMapping.FIELD_RELATIVE);
-  
+  // private final Command swerveDriveManualCommand = new
+  // SwerveDriveManualCommand(
+  // driveTrain,
+  // () -> XPosition,
+  // () -> YPosition,
+  // () -> ZPosition,
+  // () -> MiscMapping.FIELD_RELATIVE);
+
   private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
       driveTrain,
       () -> m_Xbox.getLeftY(),
       () -> m_Xbox.getLeftX(),
       () -> m_Xbox.getRightX(),
-      () -> MiscMapping.FIELD_RELATIVE); 
+      () -> MiscMapping.FIELD_RELATIVE);
 
   // private final InstantCommand ResetGyroYawInstantCommand = new
   // ResetGyroYawInstantCommand(
   // driveTrain);
-  
+
   public RobotContainer() {
     configureButtonBindings();
     driveTrain.setDefaultCommand(swerveDriveManualCommand);

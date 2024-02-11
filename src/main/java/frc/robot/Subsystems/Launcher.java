@@ -62,6 +62,7 @@ public class Launcher extends SubsystemBase {
   public void fireLauncher(double velocity) {
     m_LaunchMotor.setControl(m_voltageVelocity.withVelocity(velocity));
     SmartDashboard.putNumber("velocity", velocity);
+    SmartDashboard.putNumber("actual velocity", getLauncherVelocity());
   }
 
   @Override
@@ -71,5 +72,9 @@ public class Launcher extends SubsystemBase {
 
   public void stop() {
     m_LaunchMotor.stopMotor();
+  }
+
+  public double getLauncherVelocity() {
+    return m_LaunchMotor.getVelocity().getValueAsDouble();
   }
 }
