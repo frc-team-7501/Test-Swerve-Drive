@@ -41,21 +41,19 @@ public class RobotContainer {
   // #endregion
 
   // Create commands
-  private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
-      driveTrain,
-      () -> XPosition,
-      () -> YPosition,
-      () -> ZPosition,
-      () -> MiscMapping.FIELD_RELATIVE);
-  
   //private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
   //    driveTrain,
-  //    () -> m_Xbox.getLeftY(),
-  //    () -> m_Xbox.getLeftX(),
-  //    () -> m_Xbox.getRightX(),
+  //    () -> XPosition,
+  //    () -> YPosition,
+  //    () -> ZPosition,
   //    () -> MiscMapping.FIELD_RELATIVE);
-
-  if 
+  
+  private final Command swerveDriveManualCommand = new SwerveDriveManualCommand(
+      driveTrain,
+      () -> m_Xbox.getLeftY(),
+      () -> m_Xbox.getLeftX(),
+      () -> m_Xbox.getRightX(),
+      () -> MiscMapping.FIELD_RELATIVE); 
 
   // private final InstantCommand ResetGyroYawInstantCommand = new
   // ResetGyroYawInstantCommand(

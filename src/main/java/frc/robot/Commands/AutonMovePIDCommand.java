@@ -14,7 +14,7 @@ import frc.robot.Subsystems.Drivetrain;
 public class AutonMovePIDCommand extends PIDCommand {
   private final Drivetrain drivetrain;
   /** Creates a new AutonMovePIDCommand. */
-  public AutonMovePIDCommand(final Drivetrain drivetrain,) {
+  public AutonMovePIDCommand(final Drivetrain drivetrain) {
     super(
         // The controller that the command will use
         new PIDController(0, 0, 0),
