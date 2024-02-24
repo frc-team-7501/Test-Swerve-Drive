@@ -5,7 +5,6 @@
 package frc.robot.Subsystems;
 
 //import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -16,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
@@ -44,7 +44,7 @@ public class Drivetrain extends SubsystemBase {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-  private final PigeonIMU m_pigeonIMU = new PigeonIMU(CANMapping.PIGEON_IMU);
+  public AnalogGyro m_analogGyro = new AnalogGyro(0);
 
   private static Drivetrain instance;
 
@@ -59,7 +59,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       m_kinematics,
-      getGyroYaw2d(),
+      m_analogGyro.getRotation2d(),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -68,7 +68,7 @@ public class Drivetrain extends SubsystemBase {
       });
 
   public Drivetrain() {
-    resetYaw();
+    m_analogGyro.reset();
   }
 
   public void setBrakeMode(boolean enabled) {
@@ -77,22 +77,6 @@ public class Drivetrain extends SubsystemBase {
     // motorBR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
     // motorFL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
     // motorFR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-  }
-
-  public void resetYaw() {
-    m_pigeonIMU.setYaw(0);
-  }
-
-  public double getGyroYaw() {
-    double[] ypr = new double[3];
-    m_pigeonIMU.getYawPitchRoll(ypr);
-    return ypr[0];
-  }
-
-  public Rotation2d getGyroYaw2d() {
-    double[] ypr = new double[3];
-    m_pigeonIMU.getYawPitchRoll(ypr);
-    return Rotation2d.fromDegrees(ypr[0]);
   }
 
   /**
@@ -133,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
 
     if (fieldRelative) {
       swerveModuleStates = m_kinematics.toSwerveModuleStates(
-          ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getGyroYaw2d()));
+          ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_analogGyro.getRotation2d()));
     } else {
       swerveModuleStates = m_kinematics.toSwerveModuleStates(
           new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -154,7 +138,7 @@ public class Drivetrain extends SubsystemBase {
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     m_odometry.update(
-        getGyroYaw2d(),
+        m_analogGyro.getRotation2d(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),

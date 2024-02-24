@@ -20,6 +20,6 @@ public class ResetGyroYawInstantCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.resetYaw();
+    drivetrain.m_analogGyro.reset();
   }
 }
