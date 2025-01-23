@@ -4,18 +4,18 @@ public final class Constants {
     public static final class CANMapping {
 
         // DriveTrain 2023 Bot
-        public static final int SPARKMAX_DRIVE_BL = 52;
-        public static final int SPARKMAX_DRIVE_BR = 53;
+        public static final int SPARKMAX_DRIVE_BL = 53;
+        public static final int SPARKMAX_DRIVE_BR = 52;
         public static final int SPARKMAX_DRIVE_FL = 54;
         public static final int SPARKMAX_DRIVE_FR = 51;
 
-        public static final int TALONSRX_TURN_BL = 32;
-        public static final int TALONSRX_TURN_BR = 33;
+        public static final int TALONSRX_TURN_BL = 33;
+        public static final int TALONSRX_TURN_BR = 32;
         public static final int TALONSRX_TURN_FL = 34;
         public static final int TALONSRX_TURN_FR = 31;
 
-        public static final int TURN_CANCODER_BL = 42;
-        public static final int TURN_CANCODER_BR = 43;
+        public static final int TURN_CANCODER_BL = 43;
+        public static final int TURN_CANCODER_BR = 42;
         public static final int TURN_CANCODER_FL = 44;
         public static final int TURN_CANCODER_FR = 41;
 

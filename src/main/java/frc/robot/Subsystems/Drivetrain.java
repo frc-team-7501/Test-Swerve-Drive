@@ -93,20 +93,20 @@ public class Drivetrain extends SubsystemBase {
 
     // Get the y speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var xSpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(forward, 0.02))
+    final var xSpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(forward, 0.1))
         * Drivetrain.kMaxSpeed;
 
     // Get the x speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(strafe, 0.02))
+    final var ySpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(strafe, 0.1))
         * Drivetrain.kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(rotate, 0.02))
+    final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(rotate, 0.1))
         * Drivetrain.kMaxAngularSpeed;
 
     SmartDashboard.putNumber("xSpeed", xSpeed);
@@ -149,5 +149,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("X", m_odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Y", m_odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Heading", m_odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putNumber("GyroHeading", m_analogGyro.getRotation2d().getDegrees());
+    // SmartDashboard.putNumber("CANCoder Position", )
   }
 }
